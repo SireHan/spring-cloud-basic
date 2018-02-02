@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>service</name>
+	<filePath>src/main/java/${packageName}/${moduleName}/service/${subModuleName}</filePath>
+	<fileName>${table.className}Service.java</fileName>
+	<content><![CDATA[
+/**
+ *  该类有generator 自动生成
+ * Copyright &copy; 2017-2018 All rights reserved.
+ */
+package ${packageName}.${moduleName}.service<#if subModuleName != "">.${subModuleName}</#if>;
+
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className};
+import com.robust.basic.common.base.BaseService;
+import com.robust.basic.common.base.BaseTableData;
+import com.robust.basic.modules.sys.entity.SysUser;
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${childModel.table.className};
+
+import java.util.Map;
+import java.util.List;
+/**
+ * ${functionName}Service
+ * @author ${functionAuthor}
+ * @version ${functionVersion}
+ */
+public interface ${table.className}Service extends BaseService<${table.className}> {
+
+	boolean saveObj(${table.className} ${table.className?uncap_first}, List<${childModel.table.className}> ${childModel.table.className?uncap_first}List, SysUser user);
+
+	boolean updateObj(${table.className} ${table.className?uncap_first}, List<${childModel.table.className}> ${childModel.table.className?uncap_first}List, SysUser user);
+}
+]]>
+    </content>
+</template>

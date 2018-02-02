@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>list</name>
+	<filePath>src/main/resources/templates/modules/${moduleName}/${subModuleName}</filePath>
+	<fileName>${table.className?uncap_first}List.html</fileName>
+	<content><![CDATA[
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:security="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>${pageTitle}</title>
+    <meta charset="utf-8"/>
+</head>
+<body>
+    <section th:fragment="content">
+	    <section class="content-header">
+	      <h1>${pageTitle}
+	        <small>${pageTitle2}</small>
+	      </h1>
+	      <ol class="breadcrumb">
+	      	<#list pathList as c>
+			<li><a href="${"#"}"><i class="fa fa-dashboard"></i> ${c}</a></li>
+			</#list>
+	        <li class="active">${pageTitle}</li>
+	      </ol>
+	    </section>
+
+	    <!-- Main content -->
+	    <section class="content">
+	      <div class="row">
+	        <div class="col-xs-12">
+	          <div class="nav-tabs-custom">
+	            <ul class="nav nav-tabs">
+	              <li class="active"><a href="${"#"}fa-icons" data-toggle="tab" aria-expanded="true">${listName}列表</a></li>
+	            </ul>
+	            <div class="tab-content">
+	              <div class="tab-pane active" id="fa-icons">
+	                <form id="searchForm" class="form-inline" method="post">
+	                	<input type="hidden" name="_csrf" th:value="${"$"}{_csrf.token}" />
+	                	<!--是否是查询 查询类型input select date checkbox radiobox-->
+	                	<#list table.allTableColumns as c>
+	                		<#if c.isQuery?? && c.isQuery == "1">
+	                	<div class="form-group">
+						    <label class="col-sm-4 control-label" for="type">${c.comments}：</label>
+						    <div class="col-sm-8">
+								<#if c.showType?? && c.showType == "input">
+									<input type="text" class="form-control" id="${c.javaField}" name="${c.javaField}" maxlength="50">
+								<#elseif c.showType?? && c.showType == "select">
+							    <select class="select2-type select2-choice" id="${c.javaField}" style="width: 100%;">
+							    	<option value="">请选择</option>
+									<option th:each="${c.javaField}:${"$"}{${c.javaField}List}" th:value="${"$"}{${c.javaField}.value}"	th:text="${"$"}{${c.javaField}.label}"></option>
+		                        </select>
+		                        <#elseif c.showType?? && c.showType == "checkbox">
+		                        	<input id="${c.javaField}" name="${c.javaField}" type="checkbox" class="checkbox">
+								</#if>
+	                        </div>
+				         </div>
+				         	</#if>
+	                	</#list>
+						<div class="text-center operateBox">
+							<input id="select" class="btn btn-primary" th:if="${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:view'')')}" type="button" value="查询" />
+							<input id="add" class="btn btn-primary" th:if="${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:edit'')')}" type="button" data-toggle="modal" data-target="${"#"}myModal" value="新增"/>
+							<input id="deleteBatch" class="btn btn-primary" th:if="${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:edit'')')}" type="button" value="批量删除" />
+							<!--<input id="export" class="btn btn-primary" th:if="${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:edit'')')}" type="button" value="导出" />
+							<input id="import" class="btn btn-primary" th:if="${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:edit'')')}" type="button" data-toggle="modal" data-target="${"#"}uploadModal" value="导入"/>-->
+						</div>
+				    </form>
+				    <div class="box">
+				            <div class="box-body">
+				              <div id="dict_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+				                <div class="row">
+				                    <div class="col-sm-6"></div>
+				                    <div class="col-sm-6"></div>
+				                </div>
+				                <div class="row">
+				                    <div class="col-sm-12">
+				                    <table id="dictTable" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="dict_info">
+				                        <thead>
+							                <tr>
+								              <th style="width:30px; padding:10px 0 10px 10px">
+								                <input type="checkbox" id="checkAll">
+								              </th>
+								              <#list table.allTableColumns as c>
+								              <#if c.isList?? && c.isList == "1">
+							                  <th>${c.comments}</th>
+							                  </#if>
+							                  </#list>
+							                  <th>操作</th>
+							                </tr>
+							            </thead>
+							            <tbody></tbody>
+							        </table>
+							        </div>
+                                </div>
+                              </div>
+				            </div>
+				    </div>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+	    </section>
+
+	  <!-- 模态框（Modal） -->
+	  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <form id="inputForm" class="bs-example bs-example-form" role="form" method="post">
+		    <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                  <span aria-hidden="true">&times;</span></button>
+	                <h4 class="modal-title" id="myModalLabel" >${listName}添加</h4>
+	              </div>
+	              <div class="modal-body">
+                   <input id="id" name="id" type="hidden" value="">
+                   <#list table.allTableColumns as c>
+                   		 <#if c.isInsert?? && c.isInsert == "1">
+				         <div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">${c.comments}：</span>
+								<#if c.showType?? && c.showType == "input">
+								<input type="text" class="form-control" id="${c.javaField}" name="${c.javaField}" maxlength="50">
+								<#elseif c.showType?? && c.showType == "select">
+							    <select class="select2-type select2-choice" id="${c.javaField}" style="width: 100%;">
+							    	<option value="">请选择</option>
+									<option th:each="${c.javaField}:${"$"}{${c.javaField}List}" th:value="${"$"}{${c.javaField}.value}"	th:text="${"$"}{${c.javaField}.label}"></option>
+		                        </select>
+		                        <#elseif c.showType?? && c.showType == "checkbox">
+		                        	<input id="${c.javaField}" name="${c.javaField}" type="checkbox" class="checkbox">
+								</#if>
+							</div>
+						 </div>
+						 </#if>
+	               </#list>
+	               <div class="box">
+					<!-- /.box-header -->
+					<div class="box-body">
+	               <div id="child_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+						  <div class="row">
+							  <div class="col-sm-6"><input value="新增" id="newAdd" name="newAdd" class="btn btn-primary" type="button" data-toggle="modal" data-target="#childModal"></div>
+							  <div class="col-sm-6"></div>
+						  </div>
+						  <div class="row">
+							  <div class="col-sm-12">
+								  <table id="childTable" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="child_info">
+									  <thead>
+									  <tr>
+										  <th>序号</th>
+										  <#list childModel.table.allTableColumns as c>
+										  <#if c.isList?? && c.isList == "1">
+										  <th>${c.comments}</th>
+										  </#if>
+										  </#list>
+										  <th>操作</th>
+									  </tr>
+									  </thead>
+									  <tbody></tbody>
+								  </table>
+							  </div>
+						  </div>
+					  </div>
+					  </div>
+					  </div>
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+	                <button id="save" type="button" class="btn btn-primary" data-type="save">确定</button>
+	              </div>
+	            </div>
+            </div>
+         </form>
+	  </div>
+
+	  <!-- 模态框（Modal） -->
+	  <div class="modal fade" id="childModal" tabindex="-1" role="dialog" aria-labelledby="childModalLabel" aria-hidden="true">
+        <form id="childForm" class="bs-example bs-example-form" role="form" method="post">
+		    <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                  <span aria-hidden="true">&times;</span></button>
+	                <h4 class="modal-title" id="childModalLabel" >${listName}添加</h4>
+	              </div>
+	              <div class="modal-body">
+                   <input id="id" name="id" type="hidden" value="">
+                   <#list childModel.table.allTableColumns as c>
+                   		 <#if c.isInsert?? && c.isInsert == "1">
+				         <div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">${c.comments}：</span>
+								<#if c.showType?? && c.showType == "input">
+								<input type="text" class="form-control" id="${c.javaField}" name="${c.javaField}" maxlength="50">
+								<#elseif c.showType?? && c.showType == "select">
+							    <select class="select2-type select2-choice" id="${c.javaField}" style="width: 100%;">
+							    	<option value="">请选择</option>
+									<option th:each="${c.javaField}:${"$"}{${c.javaField}List}" th:value="${"$"}{${c.javaField}.value}"	th:text="${"$"}{${c.javaField}.label}"></option>
+		                        </select>
+		                        <#elseif c.showType?? && c.showType == "checkbox">
+		                        	<input id="${c.javaField}" name="${c.javaField}" type="checkbox" class="checkbox">
+								</#if>
+							</div>
+						 </div>
+						 </#if>
+	               </#list>
+	              <div class="modal-footer">
+	                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+	                <button id="saveChild" type="button" class="btn btn-primary" data-type="save">保存</button>
+	              </div>
+	            </div>
+            </div>
+         </form>
+	  </div>
+
+	  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModal" aria-hidden="true">
+        <div id="importForm" class="bs-example bs-example-form" role="form" method="post" enctype="multipart/form-data"
+            target="hidden_frame">
+		    <div class="modal-dialog">
+	            <div class="modal-content">
+	              <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                  <span aria-hidden="true">&times;</span></button>
+	                <h4 class="modal-title" id="myModalLabel" >${listName}导入</h4>
+	              </div>
+	              <div class="modal-body">
+	              	  <form id="modelForm" class="form-inline" action="" method="post">
+	              	  	<input type="hidden" name="_csrf" th:value="${"$"}{_csrf.token}" />
+	              		<input type="hidden" name="fileName" value="${table.className?uncap_first}_model.xls">
+	               		<input type="button" class="btn btn-info" onclick="importInfo()" value="下载模板">
+				      </form>
+                      <span class="btn btn-success fileinput-button">
+				        <i class="glyphicon glyphicon-plus"></i>
+				        <span>请选择文件</span>
+				        <input id="fileupload" type="file" name="file">
+				      </span>
+				      <table id="fileTable" role="presentation" class="table table-striped" style="margin-top:20px;"><tbody class="files"></tbody></table>
+	              </div>
+	              <div class="modal-footer">
+	                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">关闭</button>
+	              </div>
+	            </div>
+            </div>
+        </div>
+	  </div>
+
+    </section>
+
+<!-- 用于简化页面操作  -->
+<script src="/static/modules/js/common.js"></script>
+<script>
+	//禁用表单的默认提交
+    function init() {
+        function keydownFn(e) {
+            if(e.which===13){
+                e.preventDefault();
+            }
+        }
+        var $f = document.getElementById('inputForm');
+        $f.addEventListener('keydown', keydownFn);
+    }
+    init();
+</script>
+<script type="text/javascript">
+	 var dictTable = null;
+	 var childTable = null;
+	 var childData = [];
+ /* 页面加载完操作 */
+ $(document).ready(function () {
+	 /* 数据初始化 */
+	 //初始化下拉选
+	 $("#searchForm").find(".select2-type").select2();
+	 //初始化表格
+	 dictTable = initDataTable();
+	 /* 模态框事件 */
+	 //模态框关闭事件 状态清除 包括验证 模态框按钮事件
+	 modalRest('myModal',modalRestEvent);
+	 modalRest('childModal',modalRestEvent);
+
+     /* 搜索按钮事件 */
+     //查询
+     $("#select").on("click",function(){
+ 	     dictTable.ajax.reload();
+     })
+
+     //新增
+     $("#add").on("click",function(){
+     	 addChild();
+     	 childData=[];
+     	 childTable = initChildTable(null);
+      	 var myModal = $("#myModal");
+         myModal.find(".select2-type").select2();
+         //修改模态框的保存按钮名称,属性 type=save 新增 update 修改
+         myModal.find("[id='save']").data("type","save");
+         myModal.find("[id='save']").text("保存");
+         myModal.find("[id='myModalLabel']").text("${listName}新增");
+         //from 表单验证
+         formValidator();
+         //模态框按钮事件 保存or修改
+         saveOrUpdate();
+     })
+
+     //批量删除
+     $("#deleteBatch").on("click",function(){
+         $.confirm({
+		    title: false,
+		    content: '确认要批量删除字典吗?',
+		    buttons: {
+		        '取消': {
+		        	btnClass: 'btn-blue'
+		        },
+		        '确定': {
+		        	btnClass: 'btn-blue',
+		        	action:	function () {
+			        	var ids = '';
+			            //获取所有选中的check 然后ajax 成功后返回信息 并刷新页面
+			            $("input[name='checklist']").prop("checked", function(i,one){
+			            	if(one){
+			            		if(ids==''){
+			            			ids+=this.value;
+			            		}else{
+			            			ids+=','+this.value;
+			            		}
+			            	};
+			            });
+			            if(ids!=''){
+			            	ajaxDelect(ids);
+			            }else{
+			            	base_alert('未选中任何一条数据');
+			            }
+			        }
+		        }
+		    }
+		});
+     })
+ });
+
+ function modalRestEvent(){}
+
+ function addChild() {
+     //子表新增
+     $("#newAdd").on("click", function () {
+         var childModal = $("#childModal");
+         childModal.find(".select2-type").select2();
+         //修改模态框的保存按钮名称,属性 type=save 新增 update 修改
+         childModal.find("[id='saveChild']").data("type","save");
+         childModal.find("[id='saveChild']").text("保存");
+         childModal.find("[id='childModalLabel']").text("${childModel.listName}新增");
+         //from 表单验证
+         childFormValidator();
+         //模态框按钮事件 保存or修改
+         saveOrUpdateChild();
+     })
+  }
+
+ function initDataTable(){
+ 	 var option ={
+         columnDefs: [{
+                            orderable: false,
+                            targets: 0,
+                            render: function(data, type, row, meta) {
+                                return '<input type="checkbox" name="checklist" value="' + row.id + '" />'
+                            }
+                       },{
+                            orderable: false,
+                            targets: ${listNum},
+                            render: function(data, type, row, meta) {
+                            	var isEdit = [[${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:edit'')')}]];
+                            	if(isEdit){
+	                                return '<a href="${"#"}" id="update" name="update" data-id="'+row.id+'" data-toggle="modal" data-target="#myModal" >修改</a>'
+	                                    +'  <a href="${"#"}" id="delete" name="delete" data-id="'+row.id+'" >删除</a>';
+	                            }else{
+	                            	return '';
+	                            }
+                            }
+                      }],//第一列与最后一列禁止排序
+         order: [ [0, null] ],//第一列排序图标改为默认
+         ajax: {
+               url: urlPath+'/${moduleName}/${table.className?uncap_first}/dataList',
+               data: function ( d ) {
+            	   //添加额外的数据请求参数
+            	   var form = $("#searchForm");
+                   <#list table.allTableColumns as c>
+	                	<#if c.isQuery?? && c.isQuery == "1">
+							<#if c.showType?? && c.showType == "input">
+				   d.${c.javaField} = form.find("input[name = '${c.javaField}']").val();
+							<#elseif c.showType?? && c.showType == "select">
+				   d.${c.javaField} = form.find("select[id='${c.javaField}']").val();
+							</#if>
+				         </#if>
+	                </#list>
+               }
+           },
+         columns: [
+             {},
+			 <#list table.allTableColumns as c>
+	              <#if c.isList?? && c.isList == "1">
+			 { data: '${c.javaField}' , name: '${c.name}' },
+				  </#if>
+	         </#list>
+             {}
+         ],
+         fnDrawCallback: function (){//加载完成后 初始化<a>操作
+             //checkbox全选
+             $("#checkAll").prop("checked", false);
+		     $("#checkAll").on("click", function () {
+		         if ($(this).prop("checked") === true) {
+		             $("input[name='checklist']").prop("checked", $(this).prop("checked"));
+		             $('#dictTable tbody tr').addClass('selected');
+		         } else {
+		             $("input[name='checklist']").prop("checked", false);
+		             $('#dictTable tbody tr').removeClass('selected');
+		         }
+		     });
+
+		     $("a[name='update']").map(function(i,one){
+		     	 //绑定修改事件
+		     	 $(one).on("click",function(){
+			         //ajax 查询后台数据 放到模态框 修改模态框的保存按钮属性
+			         addChild();
+			         childTable = initChildTable($(this).data("id"));
+			         $.ajax({
+				         url: urlPath+'/${moduleName}/${table.className?uncap_first}/select${table.className}',
+				         type: 'POST',
+				         dataType:'json',
+				         data:{id:$(this).data("id")},
+				         success: function (data, status) {
+				         	 if(data.status=='success'){
+				         	 	 var form = $('#inputForm');
+					             var dict = data.list[0];
+					             form.find(".select2-type").select2();
+					             form.find("input[name='id']").val(dict.id);
+					             <#list table.allTableColumns as c>
+									<#if c.isInsert?? && c.isInsert == "1">
+										<#if c.showType?? && c.showType == "input">
+							   	 form.find("input[name='${c.javaField}']").val(dict.${c.javaField});
+										<#elseif c.showType?? && c.showType == "select">
+							   	 form.find("select[id='${c.javaField}']").val(dict.${c.javaField}).trigger("change");
+							   	 		<#elseif c.showType?? && c.showType == "checkbox" >
+							   	 form.find("input[name='${c.javaField}']").attr("checked",dict.${c.javaField}=="1"?true:false);
+										</#if>
+									 </#if>
+								</#list>
+
+					             //修改模态框的保存按钮名称,属性 type=save 新增 update 修改
+					             var myModal = $("#myModal");
+                                 myModal.find("[id='save']").data("type","update");
+                                 myModal.find("[id='save']").text("修改");
+                                 myModal.find("[id='myModalLabel']").text("${listName}修改");
+                                 childData=[];
+                                 for(var i=0;i<dict.sysRoleMenuList.length;i++){
+                                     childData.push(dict.${childModel.table.className?uncap_first}List[i]);
+								 }
+                                 childTable = initChildTable(childData);
+                                 //from 表单验证
+                                 formValidator();
+                                 //模态框按钮事件 保存or修改
+                                 saveOrUpdate();
+			             	 }else{
+			             		 //操作失败 弹出提示信息
+			             		 base_alert_time(data.msg,1000);
+			             	 }
+				         }
+				     });
+			     })
+		     });
+
+		     $("a[name='delete']").map(function(i,one){
+		     	 //绑定修改事件
+		     	 $(one).on("click",function(){
+		     	     $.confirm({
+					    title: false,
+					    content: '确认要删除该${listName}吗?',
+					    buttons: {
+					        '取消': {
+					        	btnClass: 'btn-blue'
+					        },
+					        '确定': {
+					        	btnClass: 'btn-blue',
+					        	action:	function () {
+						            //获取所有选中的id 然后ajax 成功后返回信息 并刷新页面
+						        	var ids = $(one).data("id");
+						            ajaxDelect(ids);
+						        }
+					        }
+					    }
+					});
+			     })
+		     });
+         }
+ 	 }
+     dictTable = initOriginalTable('dictTable',option);
+	 return dictTable;
+ }
+
+function initChildTable(data){
+ 	 var option ={
+ 	 	 serverSide: false,
+         destroy: true,
+ 	 	 dom: 'rtip',//自定义显示项
+         columnDefs: [{
+                            orderable: false,
+                            targets: 0,
+                            render: function(data, type, row, meta) {
+                                return "";
+                            }
+                       },{
+                            orderable: false,
+                            targets: ${listNum},
+                            render: function(data, type, row, meta) {
+                            	var isEdit = [[${"$"}{${"#"}authorization.expression('hasRole(''sys:dict:edit'')')}]];
+                            	if(isEdit){
+	                                return '<a href="${"#"}" id="updateChild" name="updateChild" data-id="'+row.id+'" data-toggle="modal" data-target="#childModal" >修改</a>'
+	                                    +'  <a href="${"#"}" id="deleteChild" name="deleteChild" data-id="'+row.id+'" >删除</a>';
+	                            }else{
+	                            	return '';
+	                            }
+                            }
+                      }],//第一列与最后一列禁止排序
+         order: [ [0, null] ],//第一列排序图标改为默认
+         data: data,
+         columns: [
+             {},
+			 <#list childModel.table.allTableColumns as c>
+	              <#if c.isList?? && c.isList == "1">
+			 { data: '${c.javaField}' , name: '${c.name}' },
+				  </#if>
+	         </#list>
+             {}
+         ],
+         fnDrawCallback: function (){//加载完成后 初始化<a>操作
+			 var api = this.api();
+             var startIndex= api.context[0]._iDisplayStart;//获取到本页开始的条数
+             api.column(0).nodes().each(function(cell, i) {
+                 cell.innerHTML = (i + 1 + startIndex) + "<input type='hidden' name = 'order' value='"+(i + 1 + startIndex)+"'>";
+             });
+		     $("a[name='updateChild']").map(function(i,one){
+		     	 //绑定修改事件
+		     	 $(one).on("click",function(){
+					 var order = $(one).closest("tr").find("input[name='order']").val();
+                     var dict = childData[order-1];
+                     var form = $('#childForm');
+
+                     form.find(".select2-type").select2();
+                     <#list childModel.table.allTableColumns as c>
+						<#if c.isInsert?? && c.isInsert == "1">
+							<#if c.showType?? && c.showType == "input">
+					 form.find("input[name='${c.javaField}']").val(dict.${c.javaField});
+							<#elseif c.showType?? && c.showType == "select">
+					 form.find("select[id='${c.javaField}']").val(dict.${c.javaField}).trigger("change");
+							<#elseif c.showType?? && c.showType == "checkbox" >
+					 form.find("input[name='${c.javaField}']").attr("checked",dict.${c.javaField}=="1"?true:false);
+							</#if>
+						 </#if>
+					</#list>
+
+                     //修改模态框的保存按钮名称,属性 type=save 新增 update 修改
+                     var childModal = $("#childModal");
+                     childModal.find("[id='saveChild']").data("type","update");
+                     childModal.find("[id='saveChild']").text("修改");
+                     childModal.find("[id='myModalLabel']").text("${listName}修改");
+                     //from 表单验证
+                     childFormValidator();
+                     //模态框按钮事件 保存or修改
+                     saveOrUpdateChild(order);
+			     })
+		     });
+
+		     $("a[name='deleteChild']").map(function(i,one){
+		     	 //绑定修改事件
+		     	 $(one).on("click",function(){
+		     	     $.confirm({
+					    title: false,
+					    content: '确认要删除该${listName}吗?',
+					    buttons: {
+					        '取消': {
+					        	btnClass: 'btn-blue'
+					        },
+					        '确定': {
+					        	btnClass: 'btn-blue',
+					        	action:	function () {
+						            var order = $(one).closest("tr").find("input[name='order']").val();
+									childData.splice(order-1,1);
+                                    childTable = initChildTable(childData);
+						        }
+					        }
+					    }
+					});
+			     })
+		     });
+         }
+ 	 }
+     childTable = initOriginalTable('childTable',option);
+	 return childTable;
+ }
+
+ function formValidator(){
+	 $('#inputForm').bootstrapValidator({
+         message: 'This value is not valid',
+         feedbackIcons: {
+             valid: 'glyphicon glyphicon-ok',
+             invalid: 'glyphicon glyphicon-remove',
+             validating: 'glyphicon glyphicon-refresh'
+         },
+         fields: {
+         	 <#list table.allTableColumns as c>
+	              <#if c.isInsert?? && c.isInsert == "1">
+			${c.javaField}: {
+                 message: '${c.comments}验证失败',
+                 validators: {
+					 <#list c.validators as v>
+					  	<#if v == "notEmpty">
+                     notEmpty: {
+                         message: '${c.comments}不能为空'
+                     },
+                     	<#elseif  v=="alphabet">
+                     regexp: {
+                         regexp: /^[a-zA-Z]+$/,
+                         message: '${c.comments}只能字母'
+                     },
+                     	<#elseif  v=="number">
+                     regexp: {
+                         regexp: /^[0-9]+$/,
+                         message: '${c.comments}只能数字'
+                     },
+						</#if>
+                     </#list>
+                 }
+             },
+	              </#if>
+	         </#list>
+           }
+       });
+ }
+
+ function childFormValidator(){
+	 $('#childForm').bootstrapValidator({
+         message: 'This value is not valid',
+         feedbackIcons: {
+             valid: 'glyphicon glyphicon-ok',
+             invalid: 'glyphicon glyphicon-remove',
+             validating: 'glyphicon glyphicon-refresh'
+         },
+         fields: {
+         	 <#list childModel.table.allTableColumns as c>
+	              <#if c.isInsert?? && c.isInsert == "1">
+			${c.javaField}: {
+                 message: '${c.comments}验证失败',
+                 validators: {
+					 <#list c.validators as v>
+					  	<#if v == "notEmpty">
+                     notEmpty: {
+                         message: '${c.comments}不能为空'
+                     },
+                     	<#elseif  v=="alphabet">
+                     regexp: {
+                         regexp: /^[a-zA-Z]+$/,
+                         message: '${c.comments}只能字母'
+                     },
+                     	<#elseif  v=="number">
+                     regexp: {
+                         regexp: /^[0-9]+$/,
+                         message: '${c.comments}只能数字'
+                     },
+						</#if>
+                     </#list>
+                 }
+             },
+	              </#if>
+	         </#list>
+           }
+       });
+ }
+
+function saveOrUpdateChild(order){
+ 	 $("#saveChild").on("click",function(){
+ 	 	 var bootstrapValidator = $("#childForm").data('bootstrapValidator');
+   		 bootstrapValidator.validate();
+   		 if(bootstrapValidator.isValid()){
+	     	 //数据操作方式
+	     	 var opType = $('#saveChild').data("type");
+	     	 //查找是select2的字段并赋值
+	     	 var obj = {};
+	     	 obj.opType = opType;
+	     	 var form = $("#childForm");
+	     	 <#list childModel.table.allTableColumns as c >
+	              <#if c.isInsert?? && c.isInsert == "1">
+			 obj.${c.javaField} = form.find("input[name='${c.javaField}']").val();
+				  </#if>
+			</#list>
+             $('#childModal').modal('hide');
+             if(order!=undefined){
+                 childData.splice(order-1,1,obj);
+			 }else{
+                 childData.push(obj);
+			 }
+             childTable = initChildTable(childData);
+   		 }
+     })
+ }
+
+ function saveOrUpdate(){
+ 	 $("#save").on("click",function(){
+ 	 	 var bootstrapValidator = $("#inputForm").data('bootstrapValidator');
+   		 bootstrapValidator.validate();
+   		 if(bootstrapValidator.isValid()){
+	     	 //数据操作方式
+	     	 var opType = $('#save').data("type");
+	     	 //查找是select2的字段并赋值
+	     	 var obj = {};
+	     	 obj.opType = opType;
+	     	 var form = $("#inputForm");
+	     	 <#list table.allTableColumns as c >
+	              <#if c.isInsert?? && c.isInsert == "1" && c.showType?? && c.showType == "select">
+			 obj.${c.javaField} = form.find("select[id='${c.javaField}']").val();
+				  </#if>
+			</#list>
+	     	 $.ajax({
+	             url: urlPath+'/${moduleName}/${table.className?uncap_first}/modify',
+	             type: 'POST',
+	             data: $.param(obj) + '&' + $('#inputForm').serialize() + '&childData='+JSON.stringify(childData),
+	             success: function (data, status) {
+	                 if(data.status=='success'){
+	             		 //操作成功 弹出提示信息 然后关闭弹出框 重新刷新list 页面
+	             		 base_alert_success_time(data.msg,1000,function(){
+	             		 	 $('#myModal').modal('hide');
+		                	 //ajax 重新加载  第一个参数是回调函数 第二个参数是否 分页重置
+		                	 dictTable.ajax.reload(null,false);
+	             		 })
+	             	 }else{
+	             		 //操作失败 弹出提示信息
+	             		 base_alert_time(data.msg,1000);
+	             	 }
+	             }
+	         });
+   		 }
+     })
+ }
+
+ function ajaxDelect(ids){
+     $.ajax({
+        url: urlPath+'/${moduleName}/${table.className?uncap_first}/delete${table.className}',
+        type: 'POST',
+        dataType:'json',
+        data:{'ids':ids},
+        success: function (data, status) {
+	        if(data.status=='success'){
+           	    //操作成功 弹出提示信息 重新刷新list 页面
+		    	base_alert_success_time(data.msg,1000,function(){
+		    		dictTable.ajax.reload(null,false);
+		    	})
+           	}else{
+           	    //操作失败 弹出提示信息
+                base_alert_time(data.msg,1000);
+           	}
+        }
+    });
+ }
+
+ function ajaxDelectChild(ids){
+     $.ajax({
+        url: urlPath+'/${moduleName}/${table.className?uncap_first}/delete${childModel.table.className}',
+        type: 'POST',
+        dataType:'json',
+        data:{'ids':ids},
+        success: function (data, status) {
+	        if(data.status=='success'){
+           	    //操作成功 弹出提示信息 重新刷新list 页面
+		    	base_alert_success_time(data.msg,1000,function(){
+		    		childTable.ajax.reload(null,false);
+		    	})
+           	}else{
+           	    //操作失败 弹出提示信息
+                base_alert_time(data.msg,1000);
+           	}
+        }
+    });
+ }
+
+ //导出模板
+ function importInfo(){
+ 	$("#modelForm").attr("action", urlPath+"/${moduleName}/download/${table.className?uncap_first}_model.xls");
+	$("#modelForm").submit();
+ }
+</script>
+</body>
+</html>
+]]>
+	</content>
+</template>

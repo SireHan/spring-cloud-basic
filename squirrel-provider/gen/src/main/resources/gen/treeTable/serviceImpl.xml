@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>serviceImpl</name>
+	<filePath>src/main/java/${packageName}/${moduleName}/service/${subModuleName}/impl</filePath>
+	<fileName>${table.className}ServiceImpl.java</fileName>
+	<content><![CDATA[
+/**
+ *  该类有generator 自动生成
+ * Copyright &copy; 2017-2018 All rights reserved.
+ */
+package ${packageName}.${moduleName}.service<#if subModuleName != "">.${subModuleName}</#if>.impl;
+
+import com.robust.basic.common.base.BaseEntity;
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className};
+import com.robust.basic.modules.sys.entity.SysUser;
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Example;
+import ${packageName}.${moduleName}.dao<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Mapper;
+import com.robust.basic.common.base.BaseService;
+import com.robust.basic.common.base.BaseServiceImpl;
+import ${packageName}.${moduleName}.service<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Service;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.robust.basic.common.base.BaseTableData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * ${functionName}ServiceImpl
+ * @author ${functionAuthor}
+ * @version ${functionVersion}
+ */
+ @Service
+public class ${table.className}ServiceImpl extends BaseServiceImpl implements ${table.className}Service {
+	@Autowired
+	private ${table.className?cap_first}Mapper ${table.className?uncap_first}Mapper;
+
+	@Override
+	public List<${table.className}> findList(${table.className} ${table.className?uncap_first}) {
+		if(${table.className?uncap_first}!=null){
+			return ${table.className?uncap_first}Mapper.selectByExample(getExampleFromEntity(null, ${table.className?uncap_first}));
+		}
+		return null;
+	}
+
+	@Override
+	public List<${table.className}> findList(Map<String, Object> params, ${table.className} ${table.className?uncap_first}) {
+		Integer start = (Integer)params.get("start");
+		Integer pageSize = (Integer)params.get("pageSize");
+		String orderDir = (String)params.get("orderDir");
+		String orderName = (String)params.get("orderName");
+		String type = (String)params.get("type");
+		String description = (String)params.get("description");
+		if(start==null){
+			start=0;
+		}
+
+		if(pageSize==null||pageSize==0){
+			pageSize=10;
+		}
+		//查询数据
+		${table.className}Example example = new ${table.className}Example();
+		${table.className}Example.Criteria ca = example.or();
+		if(orderName!=null&&!"".equals(orderName)){
+			example.setOrderByClause(orderName+" "+orderDir);
+		}else{
+			example.setOrderByClause("id asc");
+		}
+		List<${table.className}> list = ${table.className?uncap_first}Mapper.selectByExample(getExampleFromEntity(example,${table.className?uncap_first}));
+		return list;
+	}
+
+	@Override
+	public BaseTableData findListByPage(Map<String, Object> params, ${table.className} ${table.className?uncap_first}) {
+		Integer start = (Integer)params.get("start");
+		Integer pageSize = (Integer)params.get("pageSize");
+		String orderDir = (String)params.get("orderDir");
+		String orderName = (String)params.get("orderName");
+		String type = (String)params.get("type");
+		String description = (String)params.get("description");
+		if(start==null){
+			start=0;
+		}
+
+		if(pageSize==null||pageSize==0){
+			pageSize=10;
+		}
+		//查询数据
+		Page<${table.className}> page= PageHelper.startPage(start/pageSize+1, pageSize);
+		${table.className}Example example = new ${table.className}Example();
+		${table.className}Example.Criteria ca = example.or();
+		if(orderName!=null&&!"".equals(orderName)){
+			example.setOrderByClause(orderName+" "+orderDir);
+		}else{
+			example.setOrderByClause("id asc");
+		}
+		List<${table.className}> list = ${table.className?uncap_first}Mapper.selectByExample(getExampleFromEntity(example,${table.className?uncap_first}));
+		BaseTableData baseTableData = new BaseTableData();
+		baseTableData.setData(list);
+		//查询过滤后条数
+		PageInfo<${table.className}> pageInfo = new PageInfo<>(list);
+		baseTableData.setRecordsFiltered(pageInfo.getTotal());
+		//查询总条数
+		baseTableData.setRecordsTotal(page.getTotal());
+		return baseTableData;
+	}
+
+	private ${table.className}Example getExampleFromEntity(${table.className}Example example, ${table.className} ${table.className?uncap_first}){
+		if(example==null){
+			example = new ${table.className}Example();
+		}
+		${table.className}Example.Criteria ca = example.or();
+		<#list table.allTableColumns as c>
+			  <#if c.javaType == "Long" || c.javaType == "Integer" || c.javaType == "Double">
+		if(${table.className?uncap_first}.get${c.javaField?cap_first}()!=null){
+			  </#if>
+			  <#if c.javaType == "String">
+		if(${table.className?uncap_first}.get${c.javaField?cap_first}()!=null
+			&&!"".equals(${table.className?uncap_first}.get${c.javaField?cap_first}())){
+			  </#if>
+			  <#if c.javaType == "Date" >
+		if(${table.className?uncap_first}.get${c.javaField?cap_first}()!=null
+			&&${table.className?uncap_first}.get${c.javaField?cap_first}()!=null){
+			  </#if>
+			  <#if c.queryType == "=">
+			ca.and${c.javaField?cap_first}EqualTo(${table.className?uncap_first}.get${c.javaField?cap_first}());
+			  </#if>
+			  <#if c.queryType == "!=">
+			ca.and${c.javaField?cap_first}NotEqualTo(${table.className?uncap_first}.get${c.javaField?cap_first}());
+			  </#if>
+			  <#if c.queryType == ">" || c.queryType == "&gt;">
+			ca.and${c.javaField?cap_first}GreaterThan(${table.className?uncap_first}.get${c.javaField?cap_first}());
+			  </#if>
+			  <#if c.queryType == "<" || c.queryType == "&lt;">
+			ca.and${c.javaField?cap_first}GreaterThan(${table.className?uncap_first}.get${c.javaField?cap_first}());
+			  </#if>
+			  <#if c.queryType == "between">
+			ca.and${c.javaField?cap_first}Between(${table.className?uncap_first}.getBegin${c.javaField?cap_first}(),${table.className?uncap_first}.getEnd${c.javaField?cap_first}());
+			  </#if>
+			  <#if c.queryType == "like">
+			ca.and${c.javaField?cap_first}Like("%"+${table.className?uncap_first}.get${c.javaField?cap_first}()+"%");
+			  </#if>
+			  <#if c.queryType == "left_like">
+			ca.and${c.javaField?cap_first}Like("%"+${table.className?uncap_first}.get${c.javaField?cap_first}());
+			  </#if>
+			  <#if c.queryType == "right_like">
+			ca.and${c.javaField?cap_first}Like(${table.className?uncap_first}.get${c.javaField?cap_first}()+"%");
+			  </#if>
+		}
+		</#list>
+		return example;
+	}
+
+	@Override
+	public boolean saveObj(${table.className} ${table.className?uncap_first}, SysUser user) {
+		try {
+			//新增数据必要的初始化
+			${table.className?uncap_first} = init${table.className}(${table.className?uncap_first},false,user);
+			//查询数据是不是已经存在
+			${table.className} select${table.className} = ${table.className?uncap_first}Mapper.selectByPrimaryKey(${table.className?uncap_first}.getId());
+			if(select${table.className}!=null){
+				errorInfo="数据已经存在,新增失败";
+				return false;
+			}else{
+				if(${table.className?uncap_first}Mapper.insert(${table.className?uncap_first})>0){
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		errorInfo="数据库插入失败";
+		return false;
+	}
+
+	private ${table.className} init${table.className}(${table.className} ${table.className?uncap_first}, boolean ifUpdate, SysUser user) {
+		<#list table.allTableColumns as c>
+			 <#if c.isInsert?? && c.isInsert == "1">
+					<#if c.showType?? && c.showType == "checkbox">
+		if("on".equals(${table.className?uncap_first}.get${c.javaField?cap_first}())){
+			${table.className?uncap_first}.set${c.javaField?cap_first}("1");
+		}else{
+			${table.className?uncap_first}.set${c.javaField?cap_first}("0");
+		}
+					</#if>
+			 </#if>
+	    </#list>
+		if(!ifUpdate){
+			${table.className?uncap_first}.setCreateBy(user.getId());
+			${table.className?uncap_first}.setCreateDate(new Date());
+			${table.className?uncap_first}.setDelFlag(BaseEntity.DEL_FLAG_NORMAL);
+		}
+		${table.className?uncap_first}.setUpdateBy(user.getId());
+		${table.className?uncap_first}.setUpdateDate(new Date());
+		return ${table.className?uncap_first};
+	}
+
+	@Override
+	public boolean updateObj(${table.className} ${table.className?uncap_first}, SysUser user) {
+		try {
+			//查询数据是不是已经存在
+			${table.className} select${table.className} = ${table.className?uncap_first}Mapper.selectByPrimaryKey(${table.className?uncap_first}.getId());
+			if(select${table.className}==null){
+				errorInfo="键值不存在,修改失败";
+				return false;
+			}else{
+				init${table.className}(${table.className?uncap_first},true,user);
+				if(${table.className?uncap_first}Mapper.updateByPrimaryKeySelective(${table.className?uncap_first})>0){
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		errorInfo="数据库修改失败";
+		return false;
+	}
+
+	@Override
+	public String getErrorInfo() {
+		return errorInfo;
+	}
+
+	@Override
+	public boolean deleteObj(List<Long> ids) {
+		try {
+			for(Long id:ids){
+				${table.className} ${table.className?uncap_first} = new ${table.className}();
+				${table.className?uncap_first}.setId(id);
+				${table.className?uncap_first}.setDelFlag(BaseEntity.DEL_FLAG_DELETE);
+				${table.className?uncap_first}Mapper.updateByPrimaryKeySelective(${table.className?uncap_first});
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		errorInfo="数据库删除失败";
+		return false;
+	}
+}]]>
+    </content>
+</template>

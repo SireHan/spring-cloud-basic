@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>service</name>
+	<filePath>src/main/java/${treeModel.packageName}/${treeModel.moduleName}/service/${treeModel.subModuleName}</filePath>
+	<fileName>${table.className}Service.java</fileName>
+	<content><![CDATA[
+/**
+ *  该类有generator 自动生成
+ * Copyright &copy; 2017-2018 All rights reserved.
+ */
+package ${treeModel.packageName}.${treeModel.moduleName}.service<#if treeModel.subModuleName != "">.${treeModel.subModuleName}</#if>;
+
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className};
+import ${treeModel.packageName}.${treeModel.moduleName}.entity<#if treeModel.subModuleName != "">.${treeModel.subModuleName}</#if>.${treeModel.table.className};
+import com.robust.basic.common.base.BaseService;
+
+import java.util.List;
+
+/**
+ * ${treeModel.functionName}Service
+ * @author ${treeModel.functionAuthor}
+ * @version ${treeModel.functionVersion}
+ */
+public interface ${table.className}Service extends BaseService<${table.className}> {
+	List<${treeModel.table.className}> findTreeList(${treeModel.table.className} ${treeModel.table.className?uncap_first});
+}
+]]>
+    </content>
+</template>

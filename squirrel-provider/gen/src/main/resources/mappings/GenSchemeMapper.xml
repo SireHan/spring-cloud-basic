@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.robust.basic.modules.gen.dao.GenSchemeMapper">
+  <resultMap id="BaseResultMap" type="com.squirrel.springcloud.squirrel.gen.web.dao.GenSchemeMapper">
+        <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="name" jdbcType="VARCHAR" property="name" />
+	    <result column="category" jdbcType="VARCHAR" property="category" />
+	    <result column="package_name" jdbcType="VARCHAR" property="packageName" />
+	    <result column="module_name" jdbcType="VARCHAR" property="moduleName" />
+	    <result column="sub_module_name" jdbcType="VARCHAR" property="subModuleName" />
+	    <result column="function_name" jdbcType="VARCHAR" property="functionName" />
+	    <result column="function_name_simple" jdbcType="VARCHAR" property="functionNameSimple" />
+	    <result column="function_author" jdbcType="VARCHAR" property="functionAuthor" />
+	    <result column="function_version" jdbcType="VARCHAR" property="functionVersion" />
+	    <result column="gen_table_id" jdbcType="BIGINT" property="genTableId" />
+	    <result column="page_title" jdbcType="VARCHAR" property="pageTitle" />
+	    <result column="page_title_2" jdbcType="VARCHAR" property="pageTitle2" />
+	    <result column="path" jdbcType="VARCHAR" property="path" />
+	    <result column="list_name" jdbcType="VARCHAR" property="listName" />
+	    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+	    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+	    <result column="update_by" jdbcType="INTEGER" property="updateBy" />
+	    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+	    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+	    <result column="del_flag" jdbcType="CHAR" property="delFlag" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id,name,category,package_name,module_name,sub_module_name,function_name,function_name_simple,function_author,function_version,gen_table_id,page_title,page_title_2,path,list_name,create_by,create_date,update_by,update_date,remarks,del_flag
+  </sql>
+  <select id="selectByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from gen_scheme
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gen_scheme
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from gen_scheme
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenSchemeExample">
+    delete from gen_scheme
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+    insert into gen_scheme (name,category,package_name,module_name,sub_module_name,function_name,function_name_simple,function_author,function_version,gen_table_id,page_title,page_title_2,path,list_name,create_by,create_date,update_by,update_date,remarks,del_flag)
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{name,jdbcType=VARCHAR},
+            #{category,jdbcType=VARCHAR},
+            #{packageName,jdbcType=VARCHAR},
+            #{moduleName,jdbcType=VARCHAR},
+            #{subModuleName,jdbcType=VARCHAR},
+            #{functionName,jdbcType=VARCHAR},
+            #{functionNameSimple,jdbcType=VARCHAR},
+            #{functionAuthor,jdbcType=VARCHAR},
+            #{functionVersion,jdbcType=VARCHAR},
+            #{genTableId,jdbcType=BIGINT},
+            #{pageTitle,jdbcType=VARCHAR},
+            #{pageTitle2,jdbcType=VARCHAR},
+            #{path,jdbcType=VARCHAR},
+            #{listName,jdbcType=VARCHAR},
+            #{createBy,jdbcType=INTEGER},
+            #{createDate,jdbcType=TIMESTAMP},
+            #{updateBy,jdbcType=INTEGER},
+            #{updateDate,jdbcType=TIMESTAMP},
+            #{remarks,jdbcType=VARCHAR},
+            #{delFlag,jdbcType=CHAR},
+    </trim>
+  </insert>
+  <insert id="insertSelective" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+    insert into gen_scheme
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="name != null">
+            name,
+          </if>
+          <if test="category != null">
+            category,
+          </if>
+          <if test="packageName != null">
+            package_name,
+          </if>
+          <if test="moduleName != null">
+            module_name,
+          </if>
+          <if test="subModuleName != null">
+            sub_module_name,
+          </if>
+          <if test="functionName != null">
+            function_name,
+          </if>
+          <if test="functionNameSimple != null">
+            function_name_simple,
+          </if>
+          <if test="functionAuthor != null">
+            function_author,
+          </if>
+          <if test="functionVersion != null">
+            function_version,
+          </if>
+          <if test="genTableId != null">
+            gen_table_id,
+          </if>
+          <if test="pageTitle != null">
+            page_title,
+          </if>
+          <if test="pageTitle2 != null">
+            page_title_2,
+          </if>
+          <if test="path != null">
+            path,
+          </if>
+          <if test="listName != null">
+            list_name,
+          </if>
+          <if test="createBy != null">
+            create_by,
+          </if>
+          <if test="createDate != null">
+            create_date,
+          </if>
+          <if test="updateBy != null">
+            update_by,
+          </if>
+          <if test="updateDate != null">
+            update_date,
+          </if>
+          <if test="remarks != null">
+            remarks,
+          </if>
+          <if test="delFlag != null">
+            del_flag,
+          </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+          <if test="name != null">
+            #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="category != null">
+            #{category,jdbcType=VARCHAR},
+          </if>
+          <if test="packageName != null">
+            #{packageName,jdbcType=VARCHAR},
+          </if>
+          <if test="moduleName != null">
+            #{moduleName,jdbcType=VARCHAR},
+          </if>
+          <if test="subModuleName != null">
+            #{subModuleName,jdbcType=VARCHAR},
+          </if>
+          <if test="functionName != null">
+            #{functionName,jdbcType=VARCHAR},
+          </if>
+          <if test="functionNameSimple != null">
+            #{functionNameSimple,jdbcType=VARCHAR},
+          </if>
+          <if test="functionAuthor != null">
+            #{functionAuthor,jdbcType=VARCHAR},
+          </if>
+          <if test="functionVersion != null">
+            #{functionVersion,jdbcType=VARCHAR},
+          </if>
+          <if test="genTableId != null">
+            #{genTableId,jdbcType=BIGINT},
+          </if>
+          <if test="pageTitle != null">
+            #{pageTitle,jdbcType=VARCHAR},
+          </if>
+          <if test="pageTitle2 != null">
+            #{pageTitle2,jdbcType=VARCHAR},
+          </if>
+          <if test="path != null">
+            #{path,jdbcType=VARCHAR},
+          </if>
+          <if test="listName != null">
+            #{listName,jdbcType=VARCHAR},
+          </if>
+          <if test="createBy != null">
+            #{createBy,jdbcType=INTEGER},
+          </if>
+          <if test="createDate != null">
+            #{createDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="updateBy != null">
+            #{updateBy,jdbcType=INTEGER},
+          </if>
+          <if test="updateDate != null">
+            #{updateDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="remarks != null">
+            #{remarks,jdbcType=VARCHAR},
+          </if>
+          <if test="delFlag != null">
+            #{delFlag,jdbcType=CHAR},
+          </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenSchemeExample" resultType="java.lang.Long">
+    select count(*) from gen_scheme
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update gen_scheme
+    <set>
+          <if test="record.id != null">
+            id = #{record.id,jdbcType=BIGINT},
+          </if>
+          <if test="record.name != null">
+            name = #{record.name,jdbcType=VARCHAR},
+          </if>
+          <if test="record.category != null">
+            category = #{record.category,jdbcType=VARCHAR},
+          </if>
+          <if test="record.packageName != null">
+            package_name = #{record.packageName,jdbcType=VARCHAR},
+          </if>
+          <if test="record.moduleName != null">
+            module_name = #{record.moduleName,jdbcType=VARCHAR},
+          </if>
+          <if test="record.subModuleName != null">
+            sub_module_name = #{record.subModuleName,jdbcType=VARCHAR},
+          </if>
+          <if test="record.functionName != null">
+            function_name = #{record.functionName,jdbcType=VARCHAR},
+          </if>
+          <if test="record.functionNameSimple != null">
+            function_name_simple = #{record.functionNameSimple,jdbcType=VARCHAR},
+          </if>
+          <if test="record.functionAuthor != null">
+            function_author = #{record.functionAuthor,jdbcType=VARCHAR},
+          </if>
+          <if test="record.functionVersion != null">
+            function_version = #{record.functionVersion,jdbcType=VARCHAR},
+          </if>
+          <if test="record.genTableId != null">
+            gen_table_id = #{record.genTableId,jdbcType=BIGINT},
+          </if>
+          <if test="record.pageTitle != null">
+            page_title = #{record.pageTitle,jdbcType=VARCHAR},
+          </if>
+          <if test="record.pageTitle2 != null">
+            page_title_2 = #{record.pageTitle2,jdbcType=VARCHAR},
+          </if>
+          <if test="record.path != null">
+            path = #{record.path,jdbcType=VARCHAR},
+          </if>
+          <if test="record.listName != null">
+            list_name = #{record.listName,jdbcType=VARCHAR},
+          </if>
+          <if test="record.createBy != null">
+            create_by = #{record.createBy,jdbcType=INTEGER},
+          </if>
+          <if test="record.createDate != null">
+            create_date = #{record.createDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="record.updateBy != null">
+            update_by = #{record.updateBy,jdbcType=INTEGER},
+          </if>
+          <if test="record.updateDate != null">
+            update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="record.remarks != null">
+            remarks = #{record.remarks,jdbcType=VARCHAR},
+          </if>
+          <if test="record.delFlag != null">
+            del_flag = #{record.delFlag,jdbcType=CHAR},
+          </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update gen_scheme
+    set
+    <trim  suffixOverrides=",">
+            id = #{record.id,jdbcType=BIGINT},
+            name = #{record.name,jdbcType=VARCHAR},
+            category = #{record.category,jdbcType=VARCHAR},
+            package_name = #{record.packageName,jdbcType=VARCHAR},
+            module_name = #{record.moduleName,jdbcType=VARCHAR},
+            sub_module_name = #{record.subModuleName,jdbcType=VARCHAR},
+            function_name = #{record.functionName,jdbcType=VARCHAR},
+            function_name_simple = #{record.functionNameSimple,jdbcType=VARCHAR},
+            function_author = #{record.functionAuthor,jdbcType=VARCHAR},
+            function_version = #{record.functionVersion,jdbcType=VARCHAR},
+            gen_table_id = #{record.genTableId,jdbcType=BIGINT},
+            page_title = #{record.pageTitle,jdbcType=VARCHAR},
+            page_title_2 = #{record.pageTitle2,jdbcType=VARCHAR},
+            path = #{record.path,jdbcType=VARCHAR},
+            list_name = #{record.listName,jdbcType=VARCHAR},
+            create_by = #{record.createBy,jdbcType=INTEGER},
+            create_date = #{record.createDate,jdbcType=TIMESTAMP},
+            update_by = #{record.updateBy,jdbcType=INTEGER},
+            update_date = #{record.updateDate,jdbcType=TIMESTAMP},
+            remarks = #{record.remarks,jdbcType=VARCHAR},
+            del_flag = #{record.delFlag,jdbcType=CHAR},
+    </trim>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+    update gen_scheme
+    <set>
+          <if test="name != null">
+            name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="category != null">
+            category = #{category,jdbcType=VARCHAR},
+          </if>
+          <if test="packageName != null">
+            package_name = #{packageName,jdbcType=VARCHAR},
+          </if>
+          <if test="moduleName != null">
+            module_name = #{moduleName,jdbcType=VARCHAR},
+          </if>
+          <if test="subModuleName != null">
+            sub_module_name = #{subModuleName,jdbcType=VARCHAR},
+          </if>
+          <if test="functionName != null">
+            function_name = #{functionName,jdbcType=VARCHAR},
+          </if>
+          <if test="functionNameSimple != null">
+            function_name_simple = #{functionNameSimple,jdbcType=VARCHAR},
+          </if>
+          <if test="functionAuthor != null">
+            function_author = #{functionAuthor,jdbcType=VARCHAR},
+          </if>
+          <if test="functionVersion != null">
+            function_version = #{functionVersion,jdbcType=VARCHAR},
+          </if>
+          <if test="genTableId != null">
+            gen_table_id = #{genTableId,jdbcType=BIGINT},
+          </if>
+          <if test="pageTitle != null">
+            page_title = #{pageTitle,jdbcType=VARCHAR},
+          </if>
+          <if test="pageTitle2 != null">
+            page_title_2 = #{pageTitle2,jdbcType=VARCHAR},
+          </if>
+          <if test="path != null">
+            path = #{path,jdbcType=VARCHAR},
+          </if>
+          <if test="listName != null">
+            list_name = #{listName,jdbcType=VARCHAR},
+          </if>
+          <if test="createBy != null">
+            create_by = #{createBy,jdbcType=INTEGER},
+          </if>
+          <if test="createDate != null">
+            create_date = #{createDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="updateBy != null">
+            update_by = #{updateBy,jdbcType=INTEGER},
+          </if>
+          <if test="updateDate != null">
+            update_date = #{updateDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="remarks != null">
+            remarks = #{remarks,jdbcType=VARCHAR},
+          </if>
+          <if test="delFlag != null">
+            del_flag = #{delFlag,jdbcType=CHAR},
+          </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+    update gen_scheme
+    set
+      <trim  suffixOverrides=",">
+              name = #{name,jdbcType=VARCHAR},
+              category = #{category,jdbcType=VARCHAR},
+              package_name = #{packageName,jdbcType=VARCHAR},
+              module_name = #{moduleName,jdbcType=VARCHAR},
+              sub_module_name = #{subModuleName,jdbcType=VARCHAR},
+              function_name = #{functionName,jdbcType=VARCHAR},
+              function_name_simple = #{functionNameSimple,jdbcType=VARCHAR},
+              function_author = #{functionAuthor,jdbcType=VARCHAR},
+              function_version = #{functionVersion,jdbcType=VARCHAR},
+              gen_table_id = #{genTableId,jdbcType=BIGINT},
+              page_title = #{pageTitle,jdbcType=VARCHAR},
+              page_title_2 = #{pageTitle2,jdbcType=VARCHAR},
+              path = #{path,jdbcType=VARCHAR},
+              list_name = #{listName,jdbcType=VARCHAR},
+              create_by = #{createBy,jdbcType=INTEGER},
+              create_date = #{createDate,jdbcType=TIMESTAMP},
+              update_by = #{updateBy,jdbcType=INTEGER},
+              update_date = #{updateDate,jdbcType=TIMESTAMP},
+              remarks = #{remarks,jdbcType=VARCHAR},
+              del_flag = #{delFlag,jdbcType=CHAR},
+    </trim>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

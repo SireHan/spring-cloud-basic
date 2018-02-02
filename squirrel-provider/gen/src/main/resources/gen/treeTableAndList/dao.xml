@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template>
+	<name>dao</name>
+	<filePath>src/main/java/${packageName}/${moduleName}/dao/${subModuleName}</filePath>
+	<fileName>${table.className}Mapper.java</fileName>
+	<content><![CDATA[
+/**
+ * Copyright &copy; 2017-2018 All rights reserved.
+ */
+package ${packageName}.${moduleName}.dao<#if subModuleName != "">.${subModuleName}</#if>;
+
+import com.robust.basic.common.base.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className};
+import ${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Example;
+
+/**
+ * ${functionName}Mapper接口
+ * @author ${functionAuthor}
+ * @version ${functionVersion}
+ */
+@Mapper
+public interface ${table.className}Mapper extends BaseMapper<${table.className},${table.className}Example> {
+	
+}
+]]>
+    </content>
+</template>
