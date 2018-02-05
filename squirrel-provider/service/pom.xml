@@ -23,7 +23,7 @@
 		<!--dao组件引用-->
 		<dependency>
 			<groupId>com.squirrel.springCloud</groupId>
-			<artifactId>squirrel-domain</artifactId>
+			<artifactId>squirrel-dao</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>

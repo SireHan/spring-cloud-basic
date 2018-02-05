@@ -26,8 +26,9 @@
 
 	<modules>
 		<module>common</module>
-		<module>gen</module>
 		<module>domain</module>
+		<module>gen</module>
+		<module>dao</module>
 		<module>service</module>
 		<module>web</module>
 	</modules>

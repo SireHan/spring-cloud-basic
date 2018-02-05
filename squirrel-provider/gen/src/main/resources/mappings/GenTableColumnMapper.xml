@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squirrel.springcloud.squirrel.gen.web.dao.GenTableColumnMapper">
-  <resultMap id="BaseResultMap" type="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumn">
+<mapper namespace="com.squirrel.springcloud.provider.gen.web.dao.GenTableColumnMapper">
+  <resultMap id="BaseResultMap" type="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumn">
         <id column="id" jdbcType="BIGINT" property="id" />
 	    <result column="gen_table_id" jdbcType="BIGINT" property="genTableId" />
 	    <result column="name" jdbcType="VARCHAR" property="name" />
@@ -96,7 +96,7 @@
   <sql id="Base_Column_List">
     id,gen_table_id,name,comments,jdbc_type,java_type,java_field,feild_length,is_pk,is_null,is_insert,is_edit,is_list,is_query,is_export,is_import,export_title,export_sort,query_type,show_type,validators,dict_type,association_table_id,association_field_id,foreign_table_field,sort,create_by,create_date,update_by,update_date,remarks,del_flag
   </sql>
-  <select id="selectByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumnExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumnExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -120,13 +120,13 @@
     delete from gen_table_column
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumnExample">
+  <delete id="deleteByExample" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumnExample">
     delete from gen_table_column
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumn">
+  <insert id="insert" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumn">
     insert into gen_table_column (gen_table_id,name,comments,jdbc_type,java_type,java_field,feild_length,is_pk,is_null,is_insert,is_edit,is_list,is_query,is_export,is_import,export_title,export_sort,query_type,show_type,validators,dict_type,association_table_id,association_field_id,foreign_table_field,sort,create_by,create_date,update_by,update_date,remarks,del_flag)
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -163,7 +163,7 @@
             #{delFlag,jdbcType=CHAR},
     </trim>
   </insert>
-  <insert id="insertSelective" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumn">
+  <insert id="insertSelective" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumn">
     insert into gen_table_column
     <trim prefix="(" suffix=")" suffixOverrides=",">
           <if test="genTableId != null">
@@ -356,7 +356,7 @@
           </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumnExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumnExample" resultType="java.lang.Long">
     select count(*) from gen_table_column
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -507,7 +507,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumn">
+  <update id="updateByPrimaryKeySelective" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumn">
     update gen_table_column
     <set>
           <if test="genTableId != null">
@@ -606,7 +606,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenTableColumn">
+  <update id="updateByPrimaryKey" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenTableColumn">
     update gen_table_column
     set
       <trim  suffixOverrides=",">

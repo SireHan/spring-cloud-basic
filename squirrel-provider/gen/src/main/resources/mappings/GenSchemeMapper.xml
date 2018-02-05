@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.robust.basic.modules.gen.dao.GenSchemeMapper">
-  <resultMap id="BaseResultMap" type="com.squirrel.springcloud.squirrel.gen.web.dao.GenSchemeMapper">
+  <resultMap id="BaseResultMap" type="com.squirrel.springcloud.provider.gen.web.dao.GenSchemeMapper">
         <id column="id" jdbcType="BIGINT" property="id" />
 	    <result column="name" jdbcType="VARCHAR" property="name" />
 	    <result column="category" jdbcType="VARCHAR" property="category" />
@@ -85,7 +85,7 @@
   <sql id="Base_Column_List">
     id,name,category,package_name,module_name,sub_module_name,function_name,function_name_simple,function_author,function_version,gen_table_id,page_title,page_title_2,path,list_name,create_by,create_date,update_by,update_date,remarks,del_flag
   </sql>
-  <select id="selectByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenScheme" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -109,13 +109,13 @@
     delete from gen_scheme
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenSchemeExample">
+  <delete id="deleteByExample" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenSchemeExample">
     delete from gen_scheme
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+  <insert id="insert" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenScheme">
     insert into gen_scheme (name,category,package_name,module_name,sub_module_name,function_name,function_name_simple,function_author,function_version,gen_table_id,page_title,page_title_2,path,list_name,create_by,create_date,update_by,update_date,remarks,del_flag)
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -141,7 +141,7 @@
             #{delFlag,jdbcType=CHAR},
     </trim>
   </insert>
-  <insert id="insertSelective" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+  <insert id="insertSelective" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenScheme">
     insert into gen_scheme
     <trim prefix="(" suffix=")" suffixOverrides=",">
           <if test="name != null">
@@ -268,7 +268,7 @@
           </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenSchemeExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenSchemeExample" resultType="java.lang.Long">
     select count(*) from gen_scheme
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -375,7 +375,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+  <update id="updateByPrimaryKeySelective" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenScheme">
     update gen_scheme
     <set>
           <if test="name != null">
@@ -441,7 +441,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.squirrel.springcloud.squirrel.gen.web.entity.GenScheme">
+  <update id="updateByPrimaryKey" parameterType="com.squirrel.springcloud.provider.gen.web.entity.GenScheme">
     update gen_scheme
     set
       <trim  suffixOverrides=",">
