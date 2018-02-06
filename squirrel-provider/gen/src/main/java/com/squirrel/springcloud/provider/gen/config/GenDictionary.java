@@ -1,6 +1,6 @@
 package com.squirrel.springcloud.provider.gen.config;
 
-import com.squirrel.springcloud.provider.gen.entity.*;
+import com.squirrel.springcloud.provider.gen.entity.xml.*;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

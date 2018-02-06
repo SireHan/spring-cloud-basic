@@ -7,8 +7,9 @@ package com.squirrel.springcloud.provider.gen.status;
  */
 public enum GenTypeEnum {
 
-    DBTableAssign(1,"指定数据库中的表"),
-    WebConfigAssign(2,"从web配置中生成");
+    DBTableAssign(1,"指定数据库中的表"),//默认值
+    DBTableAll(2,"指定数据库中所有表"),
+    WebConfigAssign(3,"从web配置中生成");
 
     private Integer genTypeId;
     private String genTypeDescription;

@@ -21,10 +21,10 @@ import java.util.Properties;
 public class DbManger {
 
     private static Logger logger = LoggerFactory.getLogger(DbManger.class);
+    public static String DBPREFIX = "spring.datasource.master.";//配置文件中数据库配置前缀 默认
 
     private DruidDataSource druidDataSource = null;
     private Map<String,String> propertiesMap = new HashMap<>();//数据库配置保存
-    private String dbPrefix = "spring.datasource.master.";//配置文件中数据库配置前缀 默认
     public DBTypeEnum dbTypeEnum;
     public String dbName;
 
@@ -36,23 +36,19 @@ public class DbManger {
     private Properties beforeInit(Properties properties) {
         Properties dbproperties = new Properties();
         for(Object obj :properties.keySet()){//遍历取出数据的配置
-            String key = (String)obj;
-            if(key.contains(dbPrefix)){
-                String propertiesName = key.replace(dbPrefix,"");
-                if(propertiesMap.get(propertiesName)==null){
-                    dbproperties.setProperty(propertiesName,(String)properties.get(key));
-                }else{
-                    dbproperties.setProperty(propertiesName,propertiesMap.get(propertiesName));
+            String propertiesName = (String)obj;
+            if(propertiesMap.get(propertiesName)==null){
+                dbproperties.setProperty(propertiesName,(String)properties.get(propertiesName));
+            }else{
+                dbproperties.setProperty(propertiesName,propertiesMap.get(propertiesName));
+            }
+            if(propertiesName.equals("driverClassName")){
+                if("com.mysql.jdbc.Driver".equals(properties.get(propertiesName))){
+                    dbTypeEnum = DBTypeEnum.MysqlDB;
                 }
-                if(propertiesName.equals("driverClassName")){
-                    if("com.mysql.jdbc.Driver".equals(properties.get(key))){
-                        dbTypeEnum = DBTypeEnum.MysqlDB;
-                    }
-                }
-                if(propertiesName.equals("dbname")){
-                    dbName=(String)properties.get(key);
-                }
-
+            }
+            if(propertiesName.equals("dbname")){
+                dbName=(String)properties.get(propertiesName);
             }
         }
         return dbproperties;
