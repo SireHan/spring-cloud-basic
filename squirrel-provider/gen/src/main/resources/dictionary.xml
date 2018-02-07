@@ -4,13 +4,13 @@
 	<categories>
 		<category>
 			<template>gen/curd/mapper.xml</template>
-			<template>gen/curd/entity.xml</template>
+			<!--<template>gen/curd/entity.xml</template>
 			<template>gen/curd/entityExample.xml</template>
 			<template>gen/curd/dao.xml</template>
 			<template>gen/curd/service.xml</template>
 			<template>gen/curd/serviceImpl.xml</template>
-			<template>gen/curd/controller.xml</template>
-			<template>gen/curd/list.xml</template>
+			<template>gen/curd/controller.xml</template>-->
+			<!--<template>gen/curd/list.xml</template>-->
 			<!--<template>curd/sql.xml</template>-->
 			<!--<template>curd/viewList.xml</template>-->
 			<value>curd</value>

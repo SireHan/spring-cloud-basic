@@ -31,7 +31,7 @@ public class GenConfig {
 
     //用户配置
     private static String GEN_PREFIX = "gen.";
-    private Map<String,String> genMap = new HashMap<>();
+    public Map<String,String> genMap = new HashMap<>();
 
 
     // 暂不生成页面Map 页面属性数据 支持自定义

@@ -31,7 +31,7 @@ public class XmlUtil {
         try {
             JAXBContext context = JAXBContext.newInstance(clazz);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            File file = ResourceUtils.getFile(fileName);
+            File file = FileUtils.getClassPathFile(fileName);
             Object object = unmarshaller.unmarshal(file);
             return (T)object;
         } catch (Exception e) {
@@ -104,4 +104,5 @@ public class XmlUtil {
         }
         return false;
     }
+
 }

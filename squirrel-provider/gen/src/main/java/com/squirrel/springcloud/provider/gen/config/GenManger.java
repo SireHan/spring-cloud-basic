@@ -2,14 +2,20 @@ package com.squirrel.springcloud.provider.gen.config;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import com.alibaba.druid.pool.DruidPooledResultSet;
 import com.alibaba.druid.pool.DruidPooledStatement;
+import com.squirrel.springcloud.provider.common.util.ObjectUtils;
 import com.squirrel.springcloud.provider.common.util.ParseUtil;
-import com.squirrel.springcloud.provider.gen.status.DBTypeEnum;
+import com.squirrel.springcloud.provider.common.util.StringUtils;
+import com.squirrel.springcloud.provider.common.util.XmlUtil;
+import com.squirrel.springcloud.provider.gen.entity.TableColumn;
+import com.squirrel.springcloud.provider.gen.entity.xml.Category;
+import com.squirrel.springcloud.provider.gen.entity.xml.Template;
 import com.squirrel.springcloud.provider.gen.status.GenTypeEnum;
+import com.squirrel.springcloud.provider.gen.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,7 +55,9 @@ public class GenManger{
         //指定表信息 作者 版本 时间 如果没有配置取properties文件 配置文件没有则为空
         TableDataModal tableDataModal = new TableDataModal();
         tableDataModal.setFunctionName("系统用户表");
+        tableDataModal.setCategory("curd");
         tableDataModal.getTable().setTableName("sys_user");
+        tableDataModal.setClassName("SysUser");
 
         genConfig.addTable(tableDataModal);//可以添加多个表配置
 
@@ -68,6 +76,26 @@ public class GenManger{
         if(genConfig.getGenTypeEnum() == GenTypeEnum.DBTableAssign){
             //根据指定的表生成TableDataModal 数据列表
             tableDataModalList = makeModal(dbManger,genConfig,sqlManger);
+            //读取模板配置
+            for(TableDataModal tdm:tableDataModalList){
+                List<Category> categories = genConfig.getDictionary().getCategories().getCategoryList();
+                for(Category category:categories){
+                    if(category.getValue().equals(tdm.getCategory())){//配置的分类在系统字典中
+                        for(String template:category.getTemplateList()){
+                                //读取模板
+                                Template tpl = (Template) XmlUtil.xmlToObject(template, Template.class);
+                                try {
+                                    Map<String,Object> modal = new HashMap<>();
+                                    //对象转成mapper
+                                    ObjectUtils.objectToMap(tdm,true,modal);
+                                    TemplateUtil.generateToFile(tpl,modal,true);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -82,22 +110,55 @@ public class GenManger{
             for(TableDataModal tbname:genConfig.getTableNames()){
                 TableDataModal tableDataModal = new TableDataModal();
 
+                //自定义 属性
+                //必填
+                tableDataModal.setCategory(tbname.getCategory());
+                tableDataModal.setClassName(tbname.getClassName());
+                //非必填
                 tableDataModal.setFunctionName(tbname.getFunctionName());
-                tableDataModal.setAuthor(tbname.getAuthor()==null?genConfig.getAuthor():tbname.getAuthor());//配置优先
+
+                //配置优先
+                tableDataModal.setAuthor(tbname.getAuthor()==null?genConfig.getAuthor():tbname.getAuthor());
                 tableDataModal.setTime(tbname.getTime()==null? ParseUtil.parseDate(new Date(),"yyyy-MM-dd"):tbname.getTime());
                 tableDataModal.setVersion(tbname.getVersion()==null?genConfig.getVersion():tbname.getVersion());
+                //默认文件位置
+                tableDataModal.setMapperLocation(tbname.getMapperLocation()==null?genConfig.getLocation()
+                                + StringUtils.replaceEach("/dao/src/main/resources/mappings/",new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator})
+                                + genConfig.getModuleName():tbname.getMapperLocation());
+
+                tableDataModal.setDaoLocation(tbname.getDaoLocation()==null?genConfig.getLocation()
+                        + StringUtils.replaceEach("/dao/src/main/java"+genConfig.getBasicPackage().replace(".",File.separator)+File.separator
+                            +genConfig.getModuleName()+"/dao",new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator}):tbname.getDaoLocation());
+                tableDataModal.setDaoPackage(tbname.getDaoPackage()==null?genConfig.getBasicPackage()+"."+genConfig.getModuleName()+".dao":tbname.getDaoPackage());
+
+                tableDataModal.setEntityLocation(tbname.getEntityLocation()==null?genConfig.getLocation()
+                        + StringUtils.replaceEach("/dao/src/main/java"+genConfig.getBasicPackage().replace(".",File.separator)+File.separator
+                        +genConfig.getModuleName()+"/entity",new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator}):tbname.getEntityLocation());
+                tableDataModal.setEntityPackage(tbname.getEntityPackage()==null?genConfig.getBasicPackage()+"."+genConfig.getModuleName()+".entity":tbname.getEntityPackage());
+
+
+
 
                 param.put("tableName",tbname.getTable().getTableName());
                 String sql = SqlManger.replaceVar(sqlManger.ALL_COULMN_INFO_SQL,param);//读取sql
                 DruidPooledPreparedStatement ps = (DruidPooledPreparedStatement)connection.prepareStatement(sql);
                 ResultSet rs = ps.executeQuery();
                 while(rs.next()){
-                    String tableName=rs.getString("tableName");
-                    String columnName=rs.getString("columnName");
-                    String dataType=rs.getString("dataType");
-                    String columnComment=rs.getString("columnComment");
-                    String schemaName=rs.getString("schemaName");
-                    System.out.println(tableName+"-"+columnName+"-"+dataType+"-"+columnComment+"-"+schemaName);
+                    List<TableColumn> tableColumnList = tableDataModal.getTable().getTableColumnList();
+                    if(tableColumnList==null){
+                        tableColumnList = new ArrayList<>();
+                        tableDataModal.getTable().setTableName(rs.getString("tableName"));
+                        tableDataModal.getTable().setSchemaName(rs.getString("schemaName"));
+                    }
+                    TableColumn tableColumn = new TableColumn();
+                    tableColumn.setColumnComment(rs.getString("columnComment"));
+                    tableColumn.setColumnName(rs.getString("columnName"));
+                    tableColumn.setDataType(rs.getString("dataType"));
+                    tableColumn.setTableName(rs.getString("tableName"));
+                    tableColumn.setSchemaName(rs.getString("schemaName"));
+                    exchangeProperty(tableColumn,dbManger, genConfig);
+                    tableColumnList.add(tableColumn);
+                    tableDataModal.getTable().setTableColumnList(tableColumnList);
                  }
                 tableDataModals.add(tableDataModal);
             }
@@ -105,6 +166,16 @@ public class GenManger{
             e.printStackTrace();
         }
         return tableDataModals;
+    }
+
+    /**
+     * 对数据库查询出来的字段信息进行处理
+     * @param tableColumn
+     * @param dbManger
+     * @param genConfig
+     */
+    private void exchangeProperty(TableColumn tableColumn, DbManger dbManger, GenConfig genConfig) {
+        //TODO mybatis 对应的字段类型       java 对应的字段类型   java 属性名称
     }
 
     public GenConfig getGenConfig() {

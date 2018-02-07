@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <template>
   <name>mapper</name>
-  <filePath>src/main/resources/mappings/${moduleName}/${subModuleName}</filePath>
-  <fileName>${table.className}Mapper.xml</fileName>
+  <filePath>${mapperLocation}</filePath>
+  <fileName>${className}Mapper.xml</fileName>
   <content><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="${packageName}.${moduleName}.dao<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Mapper">
-  <resultMap id="BaseResultMap" type="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}">
-    <#list table.allTableColumns as c>
-      <#if c.name == "id">
+<mapper namespace="${daoPackage}.${className}Mapper">
+  <resultMap id="BaseResultMap" type="${entityPackage}.${className}">
+    <#list tableColumnList as columnList>
+      <#if columnList.columnName == "id">
         <id column="id" jdbcType="BIGINT" property="id" />
       <#else>
-	    <result column="${c.name}" jdbcType="${c.jdbcType}" property="${c.javaField}" />
+	    <result column="${columnList.columnName}" jdbcType="${columnList.mybatisType}" property="${columnList.javaColumnName}" />
 	  </#if>
     </#list>
   </resultMap>

@@ -5,6 +5,10 @@ package com.squirrel.springcloud.provider.common.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -586,5 +590,48 @@ public class FileUtils extends org.apache.commons.io.FileUtils{
 			return null;
 		}
 		return fileName.substring(0, fileName.lastIndexOf("."));
+	}
+
+	//---------------------------- 获取文件路径 读取程序内文件
+	public static File getClassPathFile(String fileName){
+		Resource resource = new ClassPathResource(fileName);
+		try {
+			return resource.getFile();
+		}catch (IOException e){
+			try {
+				return ResourceUtils.getFile(fileName);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+				return null;
+			}
+		}
+	}
+
+	/**
+	 * 获取工程路径
+	 * @return
+	 */
+	public static String getProjectPath(){
+		String projectPath ="";
+		try {
+			File file = new DefaultResourceLoader().getResource("").getFile();
+			if (file != null){
+				while(true){
+					File f = new File(file.getPath() + File.separator + "src" + File.separator + "main");
+					if (f == null || f.exists()){
+						break;
+					}
+					if (file.getParentFile() != null){
+						file = file.getParentFile();
+					}else{
+						break;
+					}
+				}
+				projectPath = file.toString();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return projectPath;
 	}
 }

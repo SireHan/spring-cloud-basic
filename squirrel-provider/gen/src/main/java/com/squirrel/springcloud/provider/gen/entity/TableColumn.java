@@ -15,6 +15,10 @@ public class TableColumn {
     private String dataType; //数据库类型
     private String columnComment;//字段备注
 
+    private String mybatisType;//mybatis 对应的字段类型
+    private String javaType;//java 对应的字段类型
+    private String javaColumnName;//java 属性名称
+
     public String getColumnName() {
         return columnName;
     }
@@ -53,5 +57,29 @@ public class TableColumn {
 
     public void setColumnComment(String columnComment) {
         this.columnComment = columnComment;
+    }
+
+    public String getMybatisType() {
+        return mybatisType;
+    }
+
+    public void setMybatisType(String mybatisType) {
+        this.mybatisType = mybatisType;
+    }
+
+    public String getJavaType() {
+        return javaType;
+    }
+
+    public void setJavaType(String javaType) {
+        this.javaType = javaType;
+    }
+
+    public String getJavaColumnName() {
+        return javaColumnName;
+    }
+
+    public void setJavaColumnName(String javaColumnName) {
+        this.javaColumnName = javaColumnName;
     }
 }
