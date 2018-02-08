@@ -7,7 +7,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${daoPackage}.${className}Mapper">
-  <resultMap id="BaseResultMap" type="${entityPackage}.${className}">
+    <resultMap id="BaseResultMap" type="${entityPackage}.${className}">
     <#list tableColumnList as columnList>
       <#if columnList.columnName == "id">
         <id column="id" jdbcType="BIGINT" property="id" />
@@ -15,186 +15,185 @@
 	    <result column="${columnList.columnName}" jdbcType="${columnList.mybatisType}" property="${columnList.javaColumnName}" />
 	  </#if>
     </#list>
-  </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${"$"}{criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${"$"}{criterion.condition} ${"#"}{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${"$"}{criterion.condition} ${"#"}{criterion.value} and ${"#"}{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${"$"}{criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    ${"#"}{listItem}
-                  </foreach>
-                </when>
-              </choose>
+    </resultMap>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${"$"}{criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${"$"}{criterion.condition} ${"#"}{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${"$"}{criterion.condition} ${"#"}{criterion.value} and ${"#"}{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${"$"}{criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        ${"#"}{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${"$"}{criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${"$"}{criterion.condition} ${"#"}{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${"$"}{criterion.condition} ${"#"}{criterion.value} and ${"#"}{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${"$"}{criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    ${"#"}{listItem}
-                  </foreach>
-                </when>
-              </choose>
+        </where>
+    </sql>
+
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${"$"}{criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${"$"}{criterion.condition} ${"#"}{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${"$"}{criterion.condition} ${"#"}{criterion.value} and ${"#"}{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${"$"}{criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                                        ${"#"}{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
+        </where>
+    </sql>
+
+    <sql id="Base_Column_List">
+        ${allField}
+    </sql>
+
+    <select id="selectByExample" parameterType="${entityPackage}.${className}Example" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
         </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List">
-    ${columnField}
-  </sql>
-  <select id="selectByExample" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Example" resultMap="BaseResultMap">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from ${table.name}
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${"$"}{orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from ${table.name}
-    where id = ${"#"}{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from ${table.name}
-    where id = ${"#"}{id,jdbcType=INTEGER}
-  </delete>
-  <delete id="deleteByExample" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Example">
-    delete from ${table.name}
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}">
-    insert into ${table.name} (${insertField})
-    values
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <#list insertFieldList as c>
-      	<#if c.javaField != 'id' >
-            ${"#"}{${c.javaField},jdbcType=${c.jdbcType}},
-        </#if>
-      </#list>
-    </trim>
-  </insert>
-  <insert id="insertSelective" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}">
-    insert into ${table.name}
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <#list table.allTableColumns as c>
-      	<#if c.javaField != 'id' >
-          <if test="${c.javaField} != null">
-            ${c.name},
-          </if>
-        </#if>
-      </#list>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <#list table.allTableColumns as c>
-        <#if c.javaField != 'id' >
-          <if test="${c.javaField} != null">
-            ${"#"}{${c.javaField},jdbcType=${c.jdbcType}},
-          </if>
-        </#if>
-      </#list>
-    </trim>
-  </insert>
-  <select id="countByExample" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}Example" resultType="java.lang.Long">
-    select count(*) from ${table.name}
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map">
-    update ${table.name}
-    <set>
-      <#list table.allTableColumns as c>
-          <if test="record.${c.javaField} != null">
-            ${c.name} = ${"#"}{record.${c.javaField},jdbcType=${c.jdbcType}},
-          </if>
-      </#list>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update ${table.name}
-    set
-    <trim  suffixOverrides=",">
-      <#list table.allTableColumns as c>
-            ${c.name} = ${"#"}{record.${c.javaField},jdbcType=${c.jdbcType}},
-      </#list>
-    </trim>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}">
-    update ${table.name}
-    <set>
-      <#list table.allTableColumns as c>
-        <#if c.name != "id">
-          <if test="${c.javaField} != null">
-            ${c.name} = ${"#"}{${c.javaField},jdbcType=${c.jdbcType}},
-          </if>
-        </#if>
-      </#list>
-    </set>
-    where id = ${"#"}{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="${packageName}.${moduleName}.entity<#if subModuleName != "">.${subModuleName}</#if>.${table.className}">
-    update ${table.name}
-    set
-      <trim  suffixOverrides=",">
-      <#list table.allTableColumns as c>
-          <#if c.name != "id">
-              ${c.name} = ${"#"}{${c.javaField},jdbcType=${c.jdbcType}},
-          </#if>
-      </#list>
-    </trim>
-    where id = ${"#"}{id,jdbcType=INTEGER}
-  </update>
+        <include refid="Base_Column_List" />
+        from ${tableName}
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+        <if test="orderByClause != null">
+            order by ${"$"}{orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from ${tableName}
+        where id = ${"#"}{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from ${tableName}
+        where id = ${"#"}{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByExample" parameterType="${entityPackage}.${className}Example">
+        delete from ${tableName}
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+    </delete>
+
+    <insert id="insert" parameterType="${entityPackage}.${className}">
+        insert into ${tableName} (${insertField})
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <#list insertFieldList as c>
+            ${"#"}{${c.javaColumnName},jdbcType=${c.mybatisType}},
+        </#list>
+        </trim>
+    </insert>
+
+    <insert id="insertSelective" parameterType="${entityPackage}.${className}">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        <#list insertFieldList as c>
+            ${c.columnName},
+        </#list>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <#list insertFieldList as c>
+            ${"#"}{${c.javaColumnName},jdbcType=${c.mybatisType}},
+        </#list>
+        </trim>
+    </insert>
+
+    <select id="countByExample" parameterType="${entityPackage}.${className}Example" resultType="java.lang.Long">
+        select count(*) from ${tableName}
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause" />
+        </if>
+    </select>
+
+    <update id="updateByExampleSelective" parameterType="map">
+        update ${tableName}
+        <set>
+        <#list tableColumnList as c>
+            <if test="record.${c.javaColumnName} != null">
+                ${c.columnName} = ${"#"}{record.${c.javaColumnName},jdbcType=${c.mybatisType}},
+            </if>
+        </#list>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByExample" parameterType="map">
+        update ${tableName}
+        set
+        <trim  suffixOverrides=",">
+        <#list tableColumnList as c>
+            ${c.columnName} = ${"#"}{record.${c.javaColumnName},jdbcType=${c.mybatisType}},
+        </#list>
+        </trim>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause" />
+        </if>
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="${entityPackage}.${className}">
+        update ${tableName}
+        <set>
+        <#list updateFieldList as c>
+            ${c.columnName} = ${"#"}{${c.javaColumnName},jdbcType=${c.mybatisType}},
+        </#list>
+        </set>
+        where id = ${"#"}{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="${entityPackage}.${className}">
+        update ${tableName}
+        set
+        <trim  suffixOverrides=",">
+            <#list updateFieldList as c>
+              ${c.columnName} = ${"#"}{${c.javaColumnName},jdbcType=${c.mybatisType}},
+            </#list>
+        </trim>
+        where id = ${"#"}{id,jdbcType=BIGINT}
+    </update>
+
 </mapper>]]>
   </content>
 </template>

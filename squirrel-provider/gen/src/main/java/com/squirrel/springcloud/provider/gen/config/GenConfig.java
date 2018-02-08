@@ -1,5 +1,6 @@
 package com.squirrel.springcloud.provider.gen.config;
 
+import com.squirrel.springcloud.provider.common.util.FileUtils;
 import com.squirrel.springcloud.provider.common.util.PropertyUtil;
 import com.squirrel.springcloud.provider.common.util.XmlUtil;
 import com.squirrel.springcloud.provider.gen.status.DBTypeEnum;
@@ -124,6 +125,9 @@ public class GenConfig {
     }
 
     public String getLocation() {
+        if(genMap.get("location")==null){
+           return FileUtils.getProjectPath();
+        }
         return genMap.get("location");
     }
 

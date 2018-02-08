@@ -28,8 +28,7 @@ public class TemplateUtil extends com.squirrel.springcloud.provider.common.util.
      */
     public static String generateToFile(Template tpl, Map<String, Object> model, boolean isReplaceFile) throws Exception {
         // 获取生成文件
-        String fileName = FileUtils.getProjectPath() + File.separator
-                + StringUtils.replaceEach(renderString(tpl.getFilePath() + "/", model),new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator})
+        String fileName = StringUtils.replaceEach(renderString(tpl.getFilePath() + "/", model),new String[]{"//", "/", "."}, new String[]{File.separator, File.separator, File.separator})
                 + renderString(tpl.getFileName(), model);
         logger.debug(" fileName === " + fileName);
         System.out.println(fileName);

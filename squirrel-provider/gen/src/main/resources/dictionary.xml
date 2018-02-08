@@ -27,70 +27,94 @@
 		</category>
 	</categories>
 
-	<!--数据库字段类型-->
+	<!--数据库字段类型和mybatis类型对应关系-->
 	<dbFieldType>
 		<dbType>
 			<field>
 				<value>varchar</value>
-				<label>varchar</label>
+				<label>VARCHAR</label>
 			</field>
 			<field>
 				<value>char</value>
-				<label>char</label>
+				<label>CHAR</label>
 			</field>
 			<field>
 				<value>integer</value>
-				<label>integer</label>
+				<label>INTEGER</label>
+			</field>
+			<field>
+				<value>int</value>
+				<label>INTEGER</label>
 			</field>
 			<field>
 				<value>decimal</value>
-				<label>decimal</label>
+				<label>DECIMAL</label>
 			</field>
 			<field>
 				<value>bigint</value>
-				<label>bigint</label>
+				<label>BIGINT</label>
 			</field>
 			<field>
 				<value>double</value>
-				<label>double</label>
+				<label>DOUBLE</label>
 			</field>
 			<field>
-				<value>date</value>
-				<label>date</label>
+				<value>datetime</value>
+				<label>DATE</label>
 			</field>
 			<field>
 				<value>timestamp</value>
-				<label>timestamp</label>
+				<label>TIMESTAMP</label>
 			</field>
 			<field>
 				<value>clob</value>
-				<label>clob</label>
+				<label>CLOB</label>
 			</field>
 			<value>mysql</value>
 		</dbType>
 	</dbFieldType>
 
-	<!--java 字段类型-->
+	<!--数据库类型和java 字段类型对应关系-->
 	<javaFieldType>
 		<field>
-			<value>String</value>
+			<value>varchar</value>
 			<label>String</label>
 		</field>
 		<field>
-			<value>Long</value>
+			<value>char</value>
+			<label>String</label>
+		</field>
+		<field>
+			<value>bigint</value>
 			<label>Long</label>
 		</field>
 		<field>
-			<value>Integer</value>
+			<value>integer</value>
 			<label>Integer</label>
 		</field>
 		<field>
-			<value>Double</value>
+			<value>int</value>
+			<label>Integer</label>
+		</field>
+		<field>
+			<value>decimal</value>
 			<label>Double</label>
 		</field>
 		<field>
-			<value>Date</value>
+			<value>double</value>
+			<label>Double</label>
+		</field>
+		<field>
+			<value>datetime</value>
 			<label>Date</label>
+		</field>
+		<field>
+			<value>timestamp</value>
+			<label>Date</label>
+		</field>
+		<field>
+			<value>clob</value>
+			<label>String</label>
 		</field>
 		<field>
 			<value>Boolean</value>
